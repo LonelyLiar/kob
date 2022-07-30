@@ -6,6 +6,7 @@ export default {
         photo: "",
         token: "",
         is_login: false,
+        pulling_info: true, //是否再云端拉取信息
     },
     getters: {
     },
@@ -25,6 +26,9 @@ export default {
             state.photo = "";
             state.token = "";
             state.is_login = false;
+        },
+        updatePullingInfo(state, pulling_info) {
+            state.pulling_info = pulling_info;
         }
 
         
@@ -40,12 +44,12 @@ export default {
                 },
                 success(resp){
                     if(resp.error_message === "success") {
-                        context.commit("updateToken",resp.token);
+                        localStorage.setItem("jwt.token", resp.token);
+                        context.commit("updateToken", resp.token);
                         data.success(resp);
                     } else {
                         data.error(resp);
-                    }
-                    
+                    }    
                 },
                 error(resp){
                     data.error(resp);
@@ -76,6 +80,7 @@ export default {
             })
         },
         logout(context) {
+            localStorage.removeItem("jwt.token");
             context.commit("logout");
         }
 
